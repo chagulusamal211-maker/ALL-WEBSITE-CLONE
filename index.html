@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEO-HEX VIP PORTAL</title>
+    <style>
+        /* --- Dark Cyberpunk Reset & Variables --- */
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-pink: #ff0055;
+            --neon-purple: #9d00ff;
+            --neon-green: #00ff66;
+            --bg-dark: #05050a;
+            --card-bg: #0d0d1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- KHATARNAK LOADING SCREEN SYSTEM --- */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #020205;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: all 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .loader-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Triple Rotating Rings */
+        .ring-out {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px dashed var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            animation: spin-clockwise 2s linear infinite;
+        }
+
+        .ring-mid {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border: 3px double var(--neon-pink);
+            border-left-color: transparent;
+            border-right-color: transparent;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+            animation: spin-counter 1.5s ease-in-out infinite;
+        }
+
+        .ring-in {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            border: 2px solid var(--neon-green);
+            border-top-color: transparent;
+            border-radius: 50%;
+            box-shadow: 0 0 25px var(--neon-green);
+            animation: spin-clockwise 0.8s linear infinite;
+        }
+
+        .load-core {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 30px 10px #fff, 0 0 50px 20px var(--neon-cyan);
+        }
+
+        .loading-text-wrapper {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .cyber-text {
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            animation: textGlitch 1s linear infinite;
+        }
+
+        @keyframes spin-clockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-counter {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes textGlitch {
+            0%, 100% { transform: skew(0deg); opacity: 1; }
+            50% { transform: skew(2deg); opacity: 0.8; color: var(--neon-pink); }
+        }
+
+        /* --- STYLISH CYBER DASHBOARD --- */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3));
+        }
+
+        .header::after {
+            content: '';
+            display: block;
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            margin: 20px auto 0;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 40px 20px 100px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 35px;
+        }
+
+        /* KHATARNAK CARD STRUCTURE */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            border-radius: 16px;
+            padding: 30px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.05), 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        /* Neon Corner Borders Hover Effect */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 0; height: 0;
+            border-top: 2px solid var(--neon-pink);
+            border-left: 2px solid var(--neon-pink);
+            transition: 0.3s;
+            opacity: 0;
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0; width: 0; height: 0;
+            border-bottom: 2px solid var(--neon-cyan);
+            border-right: 2px solid var(--neon-cyan);
+            transition: 0.3s;
+            opacity: 0;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: transparent;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.25), inset 0 0 20px rgba(157, 0, 255, 0.2);
+        }
+
+        .card:hover::before, .card:hover::after {
+            width: 30px;
+            height: 30px;
+            opacity: 1;
+        }
+
+        /* LOGO HEARTBEAT (DHADKAN) ANIMATION */
+        .logo-box {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            padding: 5px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            background: #000;
+            display: block;
+            /* Real Heavy Heartbeat effect */
+            animation: heavy-heartbeat 1.2s infinite cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+
+        @keyframes heavy-heartbeat {
+            0% { transform: scale(1); filter: brightness(1); }
+            12% { transform: scale(1.08); filter: brightness(1.2) drop-shadow(0 0 10px var(--neon-pink)); }
+            24% { transform: scale(1); filter: brightness(1); }
+            36% { transform: scale(1.12); filter: brightness(1.3) drop-shadow(0 0 15px var(--neon-cyan)); }
+            60% { transform: scale(1); filter: brightness(1); }
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            color: #fff;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(255,255,255,0.1);
+        }
+
+        /* MODIFIED CYBER ENTRY BUTTON */
+        .entry-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 0;
+            background: transparent;
+            color: #fff;
+            border: 2px solid var(--neon-cyan);
+            font-size: 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 8px;
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .entry-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 85, 0.4), var(--neon-pink));
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .entry-btn:hover {
+            color: #ffffff;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink);
+            text-shadow: 0 0 5px #fff;
+        }
+
+        .entry-btn:hover::before {
+            left: 0;
+        }
+
+        /* Responsive Fixes */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; gap: 25px; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="ring-out"></div>
+            <div class="ring-mid"></div>
+            <div class="ring-in"></div>
+            <div class="load-core"></div>
+        </div>
+        <div class="loading-text-wrapper">
+            <div class="cyber-text">INITIALIZING SECURE GATEWAY...</div>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1>VIP ACCESS INTERFACE</h1>
+    </div>
+
+    <div class="container">
+        <div class="grid">
+
+            <div class="card">
+                <div class="logo-box">
+                    <img class="logo-img" src="https://i.postimg.cc/02pq1GTY/images-(29).jpg" alt="4Rabet">
+                </div>
+                <div class="card-title">4Rabet</div>
+                <a href="https://4-rabet-vip-login-acces.vercel.app" target="_blank" class="entry-btn">Entry</a>
+            </div>
+
+            <div class="card">
+                <div class="logo-box">
+                    <img class="logo-img" src="https://i.postimg.cc/t4kQYqCv/images-(30).jpg" alt="Crore Bet">
+                </div>
+                <div class="card-title">Crore Bet</div>
+                <a href="https://crore-bet-official.vercel.app/" target="_blank" class="entry-btn">Entry</a>
+            </div>
+
+            <div class="card">
+                <div class="logo-box">
+                    <img class="logo-img" src="https://i.postimg.cc/bJK4Kd3q/images-(31).jpg" alt="Valor bet">
+                </div>
+                <div class="card-title">Valor Bet</div>
+                <a href="https://valor-bet-withdrawal.vercel.app/" target="_blank" class="entry-btn">Entry</a>
+            </div>
+
+            <div class="card">
+                <div class="logo-box">
+                    <img class="logo-img" src="https://i.postimg.cc/zfqFz84G/images-(6).png" alt="Parimatch">
+                </div>
+                <div class="card-title">Parimatch</div>
+                <a href="https://parimatch-vip-access.vercel.app/" target="_blank" class="entry-btn">Entry</a>
+            </div>
+
+            <div class="card">
+                <div class="logo-box">
+                    <img class="logo-img" src="https://i.postimg.cc/kMLZnRck/download-(4).png" alt="BG CASH">
+                </div>
+                <div class="card-title">BG Cash</div>
+                <a href="https://bg-cash-vip-login.vercel.app/" target="_blank" class="entry-btn">Entry</a>
+            </div>
+
+            <div class="card">
+                <div class="logo-box">
+                    <img class="logo-img" src="https://i.postimg.cc/fWS2gTN6/images-(34).jpg" alt="66 Lottery">
+                </div>
+                <div class="card-title">66 Lottery</div>
+                <a href="https://66lottery-vip.vercel.app/" target="_blank" class="entry-btn">Entry</a>
+            </div>
+
+            <div class="card">
+                <div class="logo-box">
+                    <img class="logo-img" src="https://i.postimg.cc/05Sn0WYp/images-(7).png" alt="Bc Game">
+                </div>
+                <div class="card-title">BC Game</div>
+                <a href="https://bc-game-official.vercel.app/" target="_blank" class="entry-btn">Entry</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // System initialization logic
+        window.addEventListener('load', () => {
+            const systemLoader = document.getElementById('loading-screen');
+            
+            // Loader timing set to 2.2 seconds for realistic loading feel
+            setTimeout(() => {
+                systemLoader.style.opacity = '0';
+                systemLoader.style.transform = 'scale(1.1)';
+                
+                setTimeout(() => {
+                    systemLoader.style.visibility = 'hidden';
+                }, 800);
+            }, 2200); 
+        });
+    </script>
+</body>
+</html>
